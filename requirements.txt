@@ -1,6 +1,7 @@
 matplotlib
 openpyxl
 pandas
+Jinja2
 shiny
 numpy
 lmfit

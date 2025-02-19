@@ -1,9 +1,5 @@
 matplotlib
-zipfile
-typing
 pandas
-base64
 shiny
 numpy
 lmfit
-io

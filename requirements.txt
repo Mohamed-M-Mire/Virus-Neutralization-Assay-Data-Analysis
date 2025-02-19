@@ -1,4 +1,5 @@
 matplotlib
+openpyxl
 pandas
 shiny
 numpy

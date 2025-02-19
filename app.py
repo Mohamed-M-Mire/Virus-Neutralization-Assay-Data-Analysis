@@ -539,7 +539,7 @@ def create_info_tab():
                 ui.p("When analyzing a large number of plates, be aware this process might take a while.", style="margin-top: -20px;"),
             ),
         ),
-        ui.h4(ui.strong("Created By: Mohamed M. Mire"), style="background-color: #00274C; color: #FFCB05;")
+        ui.h4(ui.strong("Created By: Mohamed M. Mire, MS, PhD"), style="background-color: #00274C; color: #FFCB05;")
     )
 
 app_ui= ui.page_navbar(

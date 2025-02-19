@@ -1,4 +1,4 @@
-# Virus-Neutralization-Data-Analysis
+# Virus Neutralization Data Analysis
 ## Description
 
 This application is designed to process and analyze data from luciferase-based virus neutralization assays.

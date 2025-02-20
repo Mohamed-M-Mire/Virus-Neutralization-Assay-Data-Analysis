@@ -6,7 +6,7 @@ You can access the **Virus Neutralization Assay Data Analysis** web application 
 
 [**Virus Neutralization Assay Data Analysis Application**](https://mohamedmire-virus-neutralization-assay-data-analysis.share.connect.posit.cloud)
 
-This web application simplifies the process of analyzing neutralization assay data, offering an easy-to-use interface for tasks such as data normalization and IC50 calculations.
+This web application simplifies the process of analyzing neutralization assay data.
 
 ## Overview
 

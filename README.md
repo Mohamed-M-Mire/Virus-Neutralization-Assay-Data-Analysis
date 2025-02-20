@@ -10,7 +10,7 @@ This web application simplifies the process of analyzing neutralization assay da
 
 ## Overview
 
-This application processes and analyzes data from luciferase-based virus neutralization assays, specifically using the **Promega Luciferase Assay System**. The plate reader that generates data in Excel format, with results across five sheets. The middle three sheets contain the assay data in various formats for further processing. Examble data file formats can be found under the Data folder.
+This application processes and analyzes data from luciferase-based virus neutralization assays. The plate reader that generates data in Excel format, with results across five sheets. The middle three sheets contain the assay data in various formats for further processing. Examble data file formats can be found under the Data folder.
 
 ## Excel File Structure
 

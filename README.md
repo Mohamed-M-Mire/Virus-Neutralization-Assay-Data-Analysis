@@ -2,7 +2,7 @@
 
 ## Overview
 
-This application processes and analyzes data from luciferase-based virus neutralization assays, specifically using the **Promega Luciferase Assay System**. The plate reader that generates data in Excel format, with results across five sheets. The middle three sheets contain the assay data in various formats for further processing.
+This application processes and analyzes data from luciferase-based virus neutralization assays, specifically using the **Promega Luciferase Assay System**. The plate reader that generates data in Excel format, with results across five sheets. The middle three sheets contain the assay data in various formats for further processing. Examble data file formats can be found under the Data folder.
 
 ## Excel File Structure
 
@@ -19,7 +19,7 @@ The Excel file contains the following sheets:
 To standardize the data, we apply the following normalization formula:
 
 **Normalization Formula**:  
-\[ x' = \left( \frac{x - MIN}{MAX - MIN} \right) \times 100 \]
+x' = ((x - MIN) / (MAX - MIN)) * 100
 
 Where:
 - **x'** = normalized value (as a percentage)
@@ -31,9 +31,7 @@ Where:
 
 IC50 values are calculated using the following dose-response function based on the **GraphPad Prism 10 Curve Fitting Guide**:
 
-\[
-IC50 = \frac{100}{1 + 10^{((\text{logIC50} - x) \times \text{HillSlope})}}
-\]
+100 / (1 + 10**((logIC50 - x) * HillSlope))
 
 We use the **lmfit** Python module to fit the curve to the normalized data. IC50 values are adjusted based on control sera calculations, with a minimum threshold of 10 for any IC50 values below that.
 

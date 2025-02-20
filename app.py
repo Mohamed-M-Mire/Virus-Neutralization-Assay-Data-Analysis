@@ -23,7 +23,7 @@ def render_metadata(
 
     This function reads sample names, sample dilution factors, and control sera dilution factors
     from separate files. It duplicates the sample names and reassigns sample numbers.
-    It also validates that dilution factor files have the correct format.
+    It also validates that the dilution factor file has the correct format.
 
     Args:
         sample_filename (str): Path to the text file containing sample IDs.
@@ -103,7 +103,7 @@ def read_raw_data(
         excel_path_name_dict, sample_dilutionFactors, sample_names_duplicated, ctrl_dilutionFactors
         )
     """
-    virus_plate_rawData= {}
+    virus_plate_rawData = {}
     postv_ctrl_rawData= {}
 
     for filename, filepath in excel_path_name_dict.items():
@@ -540,6 +540,9 @@ def create_info_tab():
             ),
         ),
         ui.h4(ui.strong("Created By: Mohamed M. Mire, MS, PhD"), style="background-color: #00274C; color: #FFCB05;")
+        ui.h4(ui.strong("Created By: Mohamed M. Mire, MS, PhD") + ui.a("LinkedIn", href="https://www.linkedin.com/in/mohamed-mire-8a308521a"), 
+              style="background-color: #00274C; color: #FFCB05;")
+
     )
 
 app_ui= ui.page_navbar(

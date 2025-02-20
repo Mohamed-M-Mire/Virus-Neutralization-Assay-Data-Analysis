@@ -37,7 +37,7 @@ Where:
 
 ## IC50 Calculations
 
-IC50 values are calculated using the following dose-response function based on the **GraphPad Prism 10 Curve Fitting Guide**:
+IC50 values are calculated using the following dose-response function based on the GraphPad Prism 10 Curve Fitting Guide:
 
 100 / (1 + 10**((logIC50 - x) * HillSlope))
 

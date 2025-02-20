@@ -6,8 +6,6 @@ You can access the **Virus Neutralization Assay Data Analysis** web application 
 
 [**Virus Neutralization Assay Data Analysis Application**](https://mohamedmire-virus-neutralization-assay-data-analysis.share.connect.posit.cloud)
 
-This web application simplifies the process of analyzing neutralization assay data.
-
 ## Overview
 
 This application processes and analyzes data from luciferase-based virus neutralization assays. The plate reader that generates data in Excel format, with results across five sheets. The middle three sheets contain the assay data in various formats for further processing. Examble data file formats can be found under the Data folder; these can be used as test runs for the application.

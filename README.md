@@ -9,15 +9,15 @@ Within the excel file, there are five sheets; the middle three sheets have the a
 
 ## Excel File Structure
 
-###   Firefly luc - Contains assay run and machine information
-
-###   Results - Assay data in 96 well plate format (difficult to work with)
-
-###   Results By Well - Common format used for data processing
-
-###   Results Table - Data presented in a manner conducive to creating dictionaries
-
-### Results Charts - Empty 96 well plate (not used in this application)
+    > Firefly luc - Contains assay run and machine information
+    
+    Results - Assay data in 96 well plate format (difficult to work with)
+    
+    Results By Well - Common format used for data processing
+    
+    Results Table - Data presented in a manner conducive to creating dictionaries
+    
+    Results Charts - Empty 96 well plate (not used in this application)
 
 # Data Normalization
 

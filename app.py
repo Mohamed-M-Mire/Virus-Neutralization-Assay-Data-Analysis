@@ -569,7 +569,7 @@ app_ui= ui.page_navbar(
                         ui.input_file("sample_dilution", "Sample Dilution Factors (TXT)", accept=[".txt"], button_label="Browse...", multiple=False),
                         ui.input_file("ctrl_dilution", "Control Dilution Factors (TXT)", accept=[".txt"], button_label="Browse...", multiple=False),
                         ui.input_file("excel_files", "Excel Files", accept=[".xlsx"], button_label="Browse...", multiple=True),
-                        ui.input_select("derive_reference", "Derive 0% Reference from", choices=["The last row", "The virus only wells"]),
+                        ui.input_select("derive_reference", "Derive 0% Reference from", choices=["The virus only wells", "The last row"]),
                         ui.input_text("variants", "Variants (comma-separated)", value="UK,A2,B1,WA,KP,BA"),
                         class_="shiny-input-container",
                     ),

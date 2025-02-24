@@ -52,7 +52,7 @@ Begin by uploading the necessary files under the **'Analyze Data'** tab:
 
 ### 2. Processing Options
 - Select the method for deriving the reference value and specify the variant of interest.
-- **Important**: Ensure the variant input matches the file name in both spelling and case (e.g., file name `RSV-A2-1` should match variant input `A2`).
+- **Important**: Ensure the variant input matches the file name in both spelling and case (e.g., file name `RSV-A2-1` should match variant input `A2`). This field is pre-populated with common SARS-CoV-2 and RSV strains for convenience. 
 
 ### 3. Data Processing
 Click **'Process Data'** to begin the analysis. The application will:

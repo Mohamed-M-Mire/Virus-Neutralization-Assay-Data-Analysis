@@ -512,7 +512,8 @@ def create_info_tab():
             ),
             ui.h5(ui.strong("2. Processing Options"), style= "color: #696969;"),
             ui.p("Select how to derive the reference value and specify the variants."),
-            ui.p("NOTE: The variant input needs to match in both spelling and font case; file name is RSV-A2-1 or A2-1, then variant input for it must be A2."),
+            ui.p("NOTE: The variant input needs to match in both spelling and font case; file name is RSV-A2-1 or A2-1, then variant input for it must be A2. 
+            This field is pre-populated with common SARS-CoV-2 and RSV strains for convenience.),
             ui.div(
                 ui.h5(ui.strong("3. Data Processing"), style= "color: #696969;"),
                 ui.p("Click 'Process Data' to start the analysis. The application will:", style= "margin-bottom: -1px;"),

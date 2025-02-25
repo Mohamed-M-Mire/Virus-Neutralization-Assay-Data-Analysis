@@ -8,7 +8,7 @@ You can access the **Virus Neutralization Assay Data Analysis** web application 
 
 ## Overview
 
-This application processes and analyzes data from luciferase-based virus neutralization assays. The plate reader that generates data in Excel format, with results across five sheets. The middle three sheets contain the assay data in various formats for further processing. Examble data file formats can be found under the Data folder; these can be used as test runs for the application.
+This application processes and analyzes data from high throughput luciferase-based virus neutralization assays. The plate reader that generates data in Excel format, with results across five sheets. The middle three sheets contain the assay data in various formats for further processing. Examble data file formats can be found under the Data folder; these can be used as test runs for the application.
 
 ## Excel File Structure
 

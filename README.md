@@ -25,7 +25,7 @@ The Excel file contains the following sheets:
 To standardize the data, we apply the following normalization formula:
 
 **Normalization Formula**:  
-x' = ((x - MIN) / (MAX - MIN)) * 100
+`x' = ((x - MIN) / (MAX - MIN)) * 100`
 
 Where:
 - **x'** = normalized value (as a percentage)
@@ -37,7 +37,7 @@ Where:
 
 IC50 values are calculated using the following dose-response function based on the GraphPad Prism 10 Curve Fitting Guide:
 
-100 / (1 + 10**((logIC50 - x) * HillSlope))
+`100 / (1 + 10**((logIC50 - x) * HillSlope))`
 
 We use the **lmfit** Python module to fit the curve to the normalized data. IC50 values are adjusted based on control sera calculations, with a minimum threshold of 10 for any IC50 values below that.
 
@@ -69,8 +69,8 @@ After processing, results will be available for each plate and sample type:
 
 ### 5. Download
 Once processing is complete, you can download:
-- Aggregated results.
-- All generated plots.
+- **Aggregated results**
+- **All generated plots**
 
 A confirmation message will appear once your downloads are complete. 
 

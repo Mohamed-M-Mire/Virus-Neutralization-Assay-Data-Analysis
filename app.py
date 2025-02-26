@@ -467,9 +467,9 @@ def create_info_tab():
         ),
         ui.h4(ui.strong("Description")),
         ui.div(
-            ui.p("This application is designed to process and analyze data from luciferase-based virus neutralization assays.", style= "margin-top: -25px;"),
-            ui.p("The lab makes use of the Promega Luciferase Assay System. The plate reader provides data in excel form in a specified format.", style= "margin-top: -20px;"),
-            ui.p("Within the excel file, there are five sheets; the middle three sheets have the assay results in three different formats.", style= "margin-top: -20px;"),       
+            ui.p("This application processes and analyzes data from high throughput luciferase-based virus neutralization assays.", style= "margin-top: -25px;"),
+            ui.p("The luminescence plate reader generates data in Excel format, with results across five sheets. ", style= "margin-top: -20px;"),
+            ui.p("The middle three sheets contain the assay data in various formats for further processing.", style= "margin-top: -20px;"),       
         ),
         ui.h4(ui.strong("Excel File Structure"), style= "margin-top: -15px;"),
         ui.div(

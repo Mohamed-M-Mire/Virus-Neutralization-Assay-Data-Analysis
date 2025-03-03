@@ -629,63 +629,65 @@ def create_well_plate_ui():
 # Implementation of the server logic 
 ## -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-def server(input, output, session):
-    rv_processed_data = reactive.Value(None)
-    rv_processing = reactive.Value(False)
-    rv_downloading_results = reactive.Value(False)
-    rv_downloading_plots = reactive.Value(False)
-    @output
-    @render.ui
-    def well_plate_ui():
-        return create_well_plate_ui()
+def server(input, output, Session):
+    rv_processed_data= reactive.Value(None)
+    rv_processing= reactive.Value(False)
+    rv_downloading_results= reactive.Value(False)
+    rv_downloading_plots= reactive.Value(False)
 
     @reactive.Effect
     @reactive.event(input.process)
     def process_data():
         rv_processing.set(True)
         try:
-            sample_names_file = input.sample_names()
-            sample_dilution_file = input.sample_dilution()
-            ctrl_dilution_file = input.ctrl_dilution()
+            
+            # Reading input files
+            sample_names_file= input.sample_names()
+            sample_dilution_file= input.sample_dilution()
+            ctrl_dilution_file= input.ctrl_dilution()
             sample_names_duplicated, sample_dilutionFactors, ctrl_dilutionFactors = render_metadata(
                 sample_names_file[0]["datapath"],
                 sample_dilution_file[0]["datapath"],
                 ctrl_dilution_file[0]["datapath"]
             )
 
-            excel_file_paths = [file['datapath'] for file in input.excel_files()]
-            excel_file_names = [file['name'][:-5] for file in input.excel_files()]
-            excel_path_name_dict = dict(zip(excel_file_names, excel_file_paths))
-            virus_plate_rawData, postv_ctrl_rawData = read_raw_data(
+            # Reading Excel files
+            excel_file_paths= [file['datapath'] for file in input.excel_files()]
+            excel_file_names= [file['name'][:-5] for file in input.excel_files()]
+            excel_path_name_dict= dict(zip(excel_file_names, excel_file_paths))
+            virus_plate_rawData, postv_ctrl_rawData= read_raw_data(
                 excel_path_name_dict,
                 sample_dilutionFactors,
                 sample_names_duplicated,
                 ctrl_dilutionFactors
             )
 
-            normalized_data, normalized_postv_CTRL_data = normalize_data(
+            # Normalizing data
+            normalized_data, normalized_postv_CTRL_data= normalize_data(
                 virus_plate_rawData,
                 postv_ctrl_rawData,
                 input.derive_reference()
             )
 
-            postv_ctrl_IC50_results, postv_ctrl_Figures = process_and_plot_results(
+            # Processing and plotting results
+            postv_ctrl_IC50_results, postv_ctrl_Figures= process_and_plot_results(
                 normalized_postv_CTRL_data,
                 sample_type="ctrl"
             )
-            sample_IC50_results, sample_IC50_Figures = process_and_plot_results(
+            sample_IC50_results, sample_IC50_Figures= process_and_plot_results(
                 normalized_data,
                 sample_type="sample"
             )
 
-            variants = [v.strip() for v in input.variants().split(',')]
+            # Adjusting IC50 values
+            variants= [v.strip() for v in input.variants().split(',')]
             postv_ctrl_IC50_results_w_adj_factor, Adjusted_sample_IC50_results = adjust_ic50_values(
                 postv_ctrl_IC50_results,
                 sample_IC50_results,
                 variants
             )
-            aggregate_control_data = pd.concat(postv_ctrl_IC50_results_w_adj_factor, axis=1).T
-            aggregate_sample_data = pd.concat(Adjusted_sample_IC50_results, axis=1).T
+            aggregate_control_data= pd.concat(postv_ctrl_IC50_results_w_adj_factor, axis=1).T
+            aggregate_sample_data= pd.concat(Adjusted_sample_IC50_results, axis=1).T
 
             rv_processed_data.set({
                 "virus_plate_rawData": virus_plate_rawData,
@@ -701,6 +703,121 @@ def server(input, output, session):
             ui.notification_show(f"Error during data processing: {str(e)}", type="error")
         finally:
             rv_processing.set(False)
+
+    @reactive.Effect
+    @reactive.event(rv_processed_data)
+    def update_dropdown_choices():
+        if rv_processed_data() is not None:
+            plate_keys= list(rv_processed_data()["virus_plate_rawData"].keys())
+            ui.update_select("raw_data_key", choices=plate_keys)
+            ui.update_select("normalized_data_key", choices=plate_keys)
+            ui.update_select("plot_key", choices=plate_keys)
+
+    @output
+    @render.ui
+    def process_status_message():
+        if rv_processing():
+            return ui.p(ui.strong("Processing data... Please wait.", style="color: blue;"))
+        elif rv_processed_data() is not None:
+            return ui.p(ui.strong("Data processed successfully.", style="color: green;"))
+        else:
+            return ui.p(ui.strong("Click 'Process Data' to begin.", style="color: red;"))
+
+    @output
+    @render.ui
+    def download_status_message():
+        if rv_downloading_results():
+            return ui.p(ui.strong("Preparing download... Please wait.", style="color: blue;"))
+        elif rv_processed_data() is not None:
+            return ui.p(ui.strong("IC50 Results ready for download.", style="color: green;"))
+        else:
+            return ui.p(ui.strong("Process data to enable.", style="color: red;"))
+
+    @output
+    @render.ui
+    def plot_download_status_message():
+        if rv_downloading_plots():
+            return ui.p(ui.strong("Preparing plots for download... Please wait.", style="color: blue;"))
+        elif rv_processed_data() is not None:
+            return ui.p(ui.strong("Plots are ready for download.", style="color: green;"))
+        else:
+            return ui.p(ui.strong("Process data to enable.", style="color: red;"))
+
+    @output
+    @render.table
+    def raw_data_table():
+        if rv_processed_data() is None or input.raw_data_key() == "":
+            return None
+        return rv_processed_data()["virus_plate_rawData"][input.raw_data_key()]
+
+    @output
+    @render.table
+    def normalized_data_table():
+        if rv_processed_data() is None or input.normalized_data_key() == "":
+            return None
+        return rv_processed_data()["normalized_data"][input.normalized_data_key()]
+
+    @output
+    @render.ui
+    def ic50_plot():
+        if rv_processed_data() is None or input.plot_key() == "":
+            return None
+        elif input.plot_type() == "Control":
+            image_base64= rv_processed_data()["postv_ctrl_Figures"][input.plot_key()]
+        else:
+            image_base64= rv_processed_data()["sample_IC50_Figures"][input.plot_key()]
+        
+        return ui.HTML(f'<img src="data:image/png;base64,{image_base64}">') # Can further manipulate the 'canvas' dimensions and such by including a style input
+        
+
+    @output
+    @render.data_frame
+    def results_table():
+        if rv_processed_data() is None:
+            return None
+        if input.results_type() == "Control":
+            return rv_processed_data()["aggregate_control_data"].reset_index()
+        else:
+            return rv_processed_data()["aggregate_sample_data"].reset_index()
+
+    @render.download(filename="aggregated_results.xlsx")
+    def download_results():
+        if rv_processed_data() is None:
+            return None
+        
+        rv_downloading_results.set(True)
+        
+        output= io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            rv_processed_data()["aggregate_control_data"].to_excel(writer, sheet_name='Control Sera Results Data')
+            rv_processed_data()["aggregate_sample_data"].to_excel(writer, sheet_name='Sample Results Data')
+        
+        output.seek(0)
+        ui.notification_show("Aggregated results downloaded successfully!", type="message")
+        rv_downloading_results.set(False)
+        return output
+    
+    @render.download(filename="all_plots.zip")
+    def download_all_plots():
+        if rv_processed_data() is None:
+            return None
+        
+        rv_downloading_plots.set(True)
+        
+        zip_buffer= io.BytesIO()
+        
+        with ZipFile(zip_buffer, 'w') as zipf:
+            for plot_type in ["postv_ctrl_Figures", "sample_IC50_Figures"]:
+                for key, image_base64 in rv_processed_data()[plot_type].items():
+                    image_data= base64.b64decode(image_base64)
+                    file_name= f"{plot_type}_{key}.png"
+                    zipf.writestr(file_name, image_data)
+        
+        zip_buffer.seek(0)
+        ui.notification_show("All plots downloaded successfully!", type="message")
+        rv_downloading_plots.set(False)
+        return zip_buffer
+
 #+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-
 
 app= App(app_ui, server)

@@ -542,8 +542,19 @@ def create_info_tab():
         ui.h4(ui.strong("Created By: Mohamed M. Mire"), style="background-color: #00274C; color: #FFCB05;")
     )
 
+def create_well_plate_ui():
+    well_plate = []
+    for row in range(8):
+        row_ui = []
+        for col in range(12):
+            row_ui.append(ui.input_text(f'well_{row}_{col}', label='', value=''))
+        well_plate.append(ui.div(*row_ui, style="display: flex;"))
+    return ui.div(*well_plate, style="display: flex; flex-direction: column; gap: 0.1px;")
+
+# Adding a new ui.nav_panel in app_ui
 app_ui = ui.page_navbar(
     ui.nav_panel("Application Guide", create_info_tab()),
+    ui.nav_panel("Well Plate", create_well_plate_ui()),
     ui.nav_panel("Analyze Data",
         ui.layout_sidebar(
             ui.sidebar(
@@ -600,7 +611,8 @@ app_ui = ui.page_navbar(
                         ui.output_data_frame("results_table")
                     )
                 ),
-                ui.nav_panel("96 Well Plate",
+                # Add the new nav_panel for Well Plate
+                ui.nav_panel("Well Plate",
                     ui.card(
                         ui.card_header("96 Well Plate"),
                         ui.output_ui("well_plate_ui")
@@ -615,36 +627,29 @@ app_ui = ui.page_navbar(
     selected="Application Guide"
 )
 
-def create_well_plate_ui():
-    well_plate = []
-    for row in range(8):
-        row_ui = []
-        for col in range(12):
-            row_ui.append(ui.input_text(f'well_{row}_{col}', label='', value=''))
-        well_plate.append(ui.div(*row_ui, style="display: flex;"))
-    return ui.div(*well_plate, style="display: flex; flex-direction: column; gap: 5px;")
+
 
 
 ## -------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Implementation of the server logic 
 ## -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Adding the well_plate_ui output in the server function
 def server(input, output, Session):
-    rv_processed_data= reactive.Value(None)
-    rv_processing= reactive.Value(False)
-    rv_downloading_results= reactive.Value(False)
-    rv_downloading_plots= reactive.Value(False)
+    rv_processed_data = reactive.Value(None)
+    rv_processing = reactive.Value(False)
+    rv_downloading_results = reactive.Value(False)
+    rv_downloading_plots = reactive.Value(False)
 
     @reactive.Effect
     @reactive.event(input.process)
     def process_data():
         rv_processing.set(True)
         try:
-            
             # Reading input files
-            sample_names_file= input.sample_names()
-            sample_dilution_file= input.sample_dilution()
-            ctrl_dilution_file= input.ctrl_dilution()
+            sample_names_file = input.sample_names()
+            sample_dilution_file = input.sample_dilution()
+            ctrl_dilution_file = input.ctrl_dilution()
             sample_names_duplicated, sample_dilutionFactors, ctrl_dilutionFactors = render_metadata(
                 sample_names_file[0]["datapath"],
                 sample_dilution_file[0]["datapath"],
@@ -652,10 +657,10 @@ def server(input, output, Session):
             )
 
             # Reading Excel files
-            excel_file_paths= [file['datapath'] for file in input.excel_files()]
-            excel_file_names= [file['name'][:-5] for file in input.excel_files()]
-            excel_path_name_dict= dict(zip(excel_file_names, excel_file_paths))
-            virus_plate_rawData, postv_ctrl_rawData= read_raw_data(
+            excel_file_paths = [file['datapath'] for file in input.excel_files()]
+            excel_file_names = [file['name'][:-5] for file in input.excel_files()]
+            excel_path_name_dict = dict(zip(excel_file_names, excel_file_paths))
+            virus_plate_rawData, postv_ctrl_rawData = read_raw_data(
                 excel_path_name_dict,
                 sample_dilutionFactors,
                 sample_names_duplicated,
@@ -663,31 +668,31 @@ def server(input, output, Session):
             )
 
             # Normalizing data
-            normalized_data, normalized_postv_CTRL_data= normalize_data(
+            normalized_data, normalized_postv_CTRL_data = normalize_data(
                 virus_plate_rawData,
                 postv_ctrl_rawData,
                 input.derive_reference()
             )
 
             # Processing and plotting results
-            postv_ctrl_IC50_results, postv_ctrl_Figures= process_and_plot_results(
+            postv_ctrl_IC50_results, postv_ctrl_Figures = process_and_plot_results(
                 normalized_postv_CTRL_data,
                 sample_type="ctrl"
             )
-            sample_IC50_results, sample_IC50_Figures= process_and_plot_results(
+            sample_IC50_results, sample_IC50_Figures = process_and_plot_results(
                 normalized_data,
                 sample_type="sample"
             )
 
             # Adjusting IC50 values
-            variants= [v.strip() for v in input.variants().split(',')]
+            variants = [v.strip() for v in input.variants().split(',')]
             postv_ctrl_IC50_results_w_adj_factor, Adjusted_sample_IC50_results = adjust_ic50_values(
                 postv_ctrl_IC50_results,
                 sample_IC50_results,
                 variants
             )
-            aggregate_control_data= pd.concat(postv_ctrl_IC50_results_w_adj_factor, axis=1).T
-            aggregate_sample_data= pd.concat(Adjusted_sample_IC50_results, axis=1).T
+            aggregate_control_data = pd.concat(postv_ctrl_IC50_results_w_adj_factor, axis=1).T
+            aggregate_sample_data = pd.concat(Adjusted_sample_IC50_results, axis=1).T
 
             rv_processed_data.set({
                 "virus_plate_rawData": virus_plate_rawData,
@@ -708,7 +713,7 @@ def server(input, output, Session):
     @reactive.event(rv_processed_data)
     def update_dropdown_choices():
         if rv_processed_data() is not None:
-            plate_keys= list(rv_processed_data()["virus_plate_rawData"].keys())
+            plate_keys = list(rv_processed_data()["virus_plate_rawData"].keys())
             ui.update_select("raw_data_key", choices=plate_keys)
             ui.update_select("normalized_data_key", choices=plate_keys)
             ui.update_select("plot_key", choices=plate_keys)
@@ -763,12 +768,11 @@ def server(input, output, Session):
         if rv_processed_data() is None or input.plot_key() == "":
             return None
         elif input.plot_type() == "Control":
-            image_base64= rv_processed_data()["postv_ctrl_Figures"][input.plot_key()]
+            image_base64 = rv_processed_data()["postv_ctrl_Figures"][input.plot_key()]
         else:
-            image_base64= rv_processed_data()["sample_IC50_Figures"][input.plot_key()]
-        
-        return ui.HTML(f'<img src="data:image/png;base64,{image_base64}">') # Can further manipulate the 'canvas' dimensions and such by including a style input
-        
+            image_base64 = rv_processed_data()["sample_IC50_Figures"][input.plot_key()]
+
+        return ui.HTML(f'<img src="data:image/png;base64,{image_base64}">')
 
     @output
     @render.data_frame
@@ -784,39 +788,47 @@ def server(input, output, Session):
     def download_results():
         if rv_processed_data() is None:
             return None
-        
+
         rv_downloading_results.set(True)
-        
-        output= io.BytesIO()
+
+        output = io.BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             rv_processed_data()["aggregate_control_data"].to_excel(writer, sheet_name='Control Sera Results Data')
             rv_processed_data()["aggregate_sample_data"].to_excel(writer, sheet_name='Sample Results Data')
-        
+
         output.seek(0)
         ui.notification_show("Aggregated results downloaded successfully!", type="message")
         rv_downloading_results.set(False)
         return output
-    
+
     @render.download(filename="all_plots.zip")
     def download_all_plots():
         if rv_processed_data() is None:
             return None
-        
+
         rv_downloading_plots.set(True)
-        
-        zip_buffer= io.BytesIO()
-        
+
+        zip_buffer = io.BytesIO()
+
         with ZipFile(zip_buffer, 'w') as zipf:
             for plot_type in ["postv_ctrl_Figures", "sample_IC50_Figures"]:
                 for key, image_base64 in rv_processed_data()[plot_type].items():
-                    image_data= base64.b64decode(image_base64)
-                    file_name= f"{plot_type}_{key}.png"
+                    image_data = base64.b64decode(image_base64)
+                    file_name = f"{plot_type}_{key}.png"
                     zipf.writestr(file_name, image_data)
-        
+
         zip_buffer.seek(0)
         ui.notification_show("All plots downloaded successfully!", type="message")
         rv_downloading_plots.set(False)
         return zip_buffer
+
+    # Add the well_plate_ui output
+    @output
+    @render.ui
+
+    def well_plate_ui():
+        return create_well_plate_ui()
+
 
 #+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-
 

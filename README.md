@@ -67,7 +67,7 @@ After processing, results will be available for each plate and sample type:
 - **IC50 Plots**
 - **Results Table**
   
-**NOTE:** With the exception of the adj_factor, all columns are rounded to four decimal places.
+**NOTE:** With the exception of the Adj_factor, all columns are rounded to four decimal places.
 
 ### 5. Download
 Once processing is complete, you can download:

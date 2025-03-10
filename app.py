@@ -372,7 +372,7 @@ def process_and_plot_results(
             
             plot_dose_response_curve(ax, norm_DF.index, sample_data, sample_name, ic50, logIC50, HillSlope, log_dilution_factors)
 
-        results_df[key]= pd.DataFrame(results_dict)
+        results_df[key]= pd.DataFrame(results_dict).round(4)
         format_plot(ax, key)
         
         # Save the plot as a base64 encoded string...
@@ -445,7 +445,7 @@ def adjust_ic50_values(
             ).clip(lower=10).T  # Adjusted IC50 values are set to 10 if lower than 10
             
             adj_ic50.columns= sample.columns
-            Adjusted_sample_IC50_results[key]= pd.concat([sample, adj_ic50])
+            Adjusted_sample_IC50_results[key]= pd.concat([sample, adj_ic50.round(4)])
             
         except KeyError:
             print(f"\033[1;31mError: Missing key {key} in postv_ctrl_IC50_results_w_adj_factor\033[0m")
@@ -531,6 +531,7 @@ def create_info_tab():
                     ui.tags.li("IC50 Plots"),
                     ui.tags.li("Results Table")
                 ),
+                ui.p("NOTE: With the exception of the adj_factor, all columns are rounded to four decimal places."),
             ),
             ui.div(
                 ui.h5(ui.strong("5. Download"), style= "color: #696969;"),

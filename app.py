@@ -705,11 +705,21 @@ def server(input, output, Session):
                 "aggregate_sample_data": aggregate_sample_data
             })
 
+        #     ui.notification_show("Data processing complete!", type="message")
+        # except Exception as e:
+        #     ui.notification_show(f"Error during data processing: {str(e)}", type="error")
+        # finally:
+        #     rv_processing.set(False)
+
             ui.notification_show("Data processing complete!", type="message")
+            print("Processing completed...")
         except Exception as e:
+            rv_processing.set(False)
+            print(f"Error during data processing: {str(e)}")
             ui.notification_show(f"Error during data processing: {str(e)}", type="error")
         finally:
             rv_processing.set(False)
+
 
     @reactive.Effect
     @reactive.event(rv_processed_data)

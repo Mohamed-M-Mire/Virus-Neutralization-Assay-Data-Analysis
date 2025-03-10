@@ -531,10 +531,10 @@ def create_info_tab():
                     ui.tags.li("IC50 Plots"),
                     ui.tags.li("Results Table"), style= "margin-bottom: -1px;"
                 ),
-                ui.p("NOTE: With the exception of the adj_factor, all columns are rounded to four decimal places."),
+                ui.p("NOTE: With the exception of the adj_factor, all columns in the Results Table are rounded to four decimal places."),
             ),
             ui.div(
-                ui.h5(ui.strong("5. Download"), style= "color: #696969;"),
+                ui.h5(ui.strong("5. Download"), style= "color: #696969; margin-top: 15px;"),
                 ui.p("You can download the aggregated results and all generated plots.", style="margin-top: 0px;"),
                 ui.p("Once downloads are done you will get a confirmation message.", style="margin-top: -20px;"),
                 ui.p("When analyzing a large number of plates, be aware this process might take a while.", style="margin-top: -20px;"),
@@ -542,7 +542,7 @@ def create_info_tab():
         ),
         ui.h4(
     [
-        ui.strong("Created By: Mohamed M. Mire, MS, PhD "),
+        ui.strong("Created By: Mohamed M. Mire, MS, PhD  "),
         ui.a("LinkedIn", href="https://www.linkedin.com/in/mohamed-mire-8a308521a", style="color: #00FFFF;")
     ],
     style="background-color: #00274C; color: #FFCB05;"

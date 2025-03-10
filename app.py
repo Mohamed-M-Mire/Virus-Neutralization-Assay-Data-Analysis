@@ -529,7 +529,7 @@ def create_info_tab():
                     ui.tags.li("Raw Data"),
                     ui.tags.li("Normalized Data"),
                     ui.tags.li("IC50 Plots"),
-                    ui.tags.li("Results Table")
+                    ui.tags.li("Results Table"), style= "margin-bottom: -1px;"
                 ),
                 ui.p("NOTE: With the exception of the adj_factor, all columns are rounded to four decimal places."),
             ),

@@ -531,7 +531,7 @@ def create_info_tab():
                     ui.tags.li("IC50 Plots"),
                     ui.tags.li("Results Table"), style= "margin-bottom: -1px;"
                 ),
-                ui.p("NOTE: With the exception of the adj_factor, all columns in the Results Table are rounded to four decimal places."),
+                ui.p("NOTE: With the exception of the Adj_factor, all columns in the Results Table are rounded to four decimal places."),
             ),
             ui.div(
                 ui.h5(ui.strong("5. Download"), style= "color: #696969; margin-top: 15px;"),

@@ -468,7 +468,7 @@ def create_info_tab():
         ui.h4(ui.strong("Description")),
         ui.div(
             ui.p("This application processes and analyzes data from high throughput luciferase-based virus neutralization assays.", style= "margin-top: -25px;"),
-            ui.p("The luminescence plate reader generates data in Excel format, with results across three to five sheets (depending on instrument data output settings). ", style= "margin-top: -20px;"),
+            ui.p("The luminescence plate reader generates data in Excel format, with results across three to five sheets. ", style= "margin-top: -20px;"),
             ui.p("The middle three sheets contain the assay data in various formats for further processing.", style= "margin-top: -20px;"),       
         ),
         ui.h4(ui.strong("Excel File Structure"), style= "margin-top: -15px;"),

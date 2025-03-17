@@ -127,14 +127,14 @@ def read_raw_data(
             elif filename.endswith("5"):
                 new_column_names= sample_names_duplicated.loc[41:50].values.flatten().tolist()
             
-            virus_plate_rawData[filename].columns= new_column_names + list(virus_plate_rawData[filename].columns[10:])
+            virus_plate_rawData[filename].columns = new_column_names + list(virus_plate_rawData[filename].columns[10:])
 
-            odd_vals= virus_plate_rawData[filename].positive_ctrl.values[1::2]
-            even_vals= virus_plate_rawData[filename].positive_ctrl.values[::2]
-            postv_ctrlData= pd.DataFrame(data=(even_vals, odd_vals)).T
-            postv_ctrlData.columns= ["Positive Control Sera"]*2
-            postv_ctrlData.index= ctrl_dilutionFactors["dilution_factors"]
-            postv_ctrl_rawData[filename]= postv_ctrlData
+            odd_vals = virus_plate_rawData[filename].positive_ctrl.values[1::2]
+            even_vals = virus_plate_rawData[filename].positive_ctrl.values[::2]
+            postv_ctrlData = pd.DataFrame(data=(even_vals, odd_vals)).T
+            postv_ctrlData.columns = ["Positive Control Sera"]*2
+            postv_ctrlData.index = ctrl_dilutionFactors["dilution_factors"]
+            postv_ctrl_rawData[filename] = postv_ctrlData
         except Exception as e:
             print(f"Error processing file {filename}: {str(e)}")
 
@@ -186,38 +186,38 @@ def normalize_data(
         postv_ctrl_rawData = {...}  # Dictionary of raw positive control DataFrames
         normalized_data, normalized_postv_CTRL_data = normalize_data(raw_data, postv_ctrl_rawData, "row")
     """
-    normalized_data= {}
-    normalized_postv_CTRL_data= {}
+    normalized_data = {}
+    normalized_postv_CTRL_data `````= {}
 
     def normalize(x, reference_low, reference_high):
         return ((x - reference_low) / (reference_high - reference_low)) * 100
 
     for key, df in raw_data.items():
-        cells_only_wells= df.iloc[-2:, 10]
-        average_cells= np.mean(cells_only_wells)
+        cells_only_wells = df.iloc[-2:, 10]
+        average_cells = np.mean(cells_only_wells)
         
-        virus_only_wells= df.iloc[:6, 10]
-        ave_virusWells= np.mean(virus_only_wells)
+        virus_only_wells = df.iloc[:6, 10]
+        ave_virusWells = np.mean(virus_only_wells)
 
-        last_row= df.iloc[-1, 0:10]
-        highest_three_ave= np.mean(np.sort(last_row.values)[-3:])
+        last_row = df.iloc[-1, 0:10]
+        highest_three_ave = np.mean(np.sort(last_row.values)[-3:])
         
         if derive_reference_value_by == "The last row":
-            reference_low_sample= highest_three_ave
-            reference_low_ctrl= np.mean(postv_ctrl_rawData[key].iloc[-1])
+            reference_low_sample = highest_three_ave
+            reference_low_ctrl = np.mean(postv_ctrl_rawData[key].iloc[-1])
         elif derive_reference_value_by == "The virus only wells":
-            reference_low_sample= ave_virusWells
-            reference_low_ctrl= ave_virusWells
+            reference_low_sample = ave_virusWells
+            reference_low_ctrl = ave_virusWells
         else:
             raise ValueError("Invalid value for derive_reference_value_by. Must be 'last row' or 'virus'.")
 
         # Normalize sample data
-        norm_data= df.iloc[:, 0:10].apply(lambda x: normalize(x, reference_low_sample, average_cells))
-        normalized_data[key]= norm_data
+        norm_data = df.iloc[:, 0:10].apply(lambda x: normalize(x, reference_low_sample, average_cells))
+        normalized_data[key] = norm_data
 
         # Normalize positive control data
         norm_posCtrl= postv_ctrl_rawData[key].apply(lambda x: normalize(x, reference_low_ctrl, average_cells))
-        normalized_postv_CTRL_data[key]= norm_posCtrl
+        normalized_postv_CTRL_data[key] = norm_posCtrl
 
     return normalized_data, normalized_postv_CTRL_data
 
@@ -228,7 +228,7 @@ def dose_response(x, logIC50, HillSlope):
 # IC50 calculation helper function 1 0f 2
 def estimate_initial_logIC50(x_data, y_data):
     idx= np.argmin(np.abs(y_data - 50))
-    initial_logIC50= x_data[idx]
+    initial_logIC50 = x_data[idx]
     print(f"Initial logIC50 estimate: {initial_logIC50}")
     return initial_logIC50
 
@@ -239,10 +239,10 @@ def calculate_ic50(x_data, y_data):
         if len(x_data) != len(y_data) or len(x_data) == 0:
             raise ValueError("Invalid input data: x_data and y_data must have the same non-zero length")
         
-        model= Model(dose_response)
+        model = Model(dose_response)
         
-        params= Parameters()
-        initial_logIC50= estimate_initial_logIC50(x_data, y_data)
+        params = Parameters()
+        initial_logIC50 = estimate_initial_logIC50(x_data, y_data)
         params.add('logIC50', value=initial_logIC50)
         params.add('HillSlope', value=-1)
         
@@ -250,8 +250,8 @@ def calculate_ic50(x_data, y_data):
         
         result= model.fit(y_data, params, x=x_data)
         
-        logIC50_fit= result.params['logIC50'].value
-        HillSlope_fit= result.params['HillSlope'].value
+        logIC50_fit = result.params['logIC50'].value
+        HillSlope_fit = result.params['HillSlope'].value
         
         print(f"Fitted parameters: logIC50 = {logIC50_fit}, HillSlope = {HillSlope_fit}")
         print(f"Fit success: {result.success}")
@@ -260,7 +260,7 @@ def calculate_ic50(x_data, y_data):
         IC50= 10**logIC50_fit
         print(f"Calculated IC50: {IC50}")
         
-        r_squared= result.summary()["rsquared"]
+        r_squared = result.summary()["rsquared"]
         print(f"R-squared: {r_squared}")
         
         return IC50, logIC50_fit, HillSlope_fit, r_squared
@@ -275,8 +275,8 @@ def calculate_ic50(x_data, y_data):
 def plot_dose_response_curve(ax, x_data, y_data, sample_name, ic50, logIC50, HillSlope, log_dilution_factors):
     ax.semilogx(x_data, y_data, 'o', label= f'{sample_name} (Data)')
     if not np.isnan(ic50):
-        x_fit= np.logspace(min(log_dilution_factors), max(log_dilution_factors), 100)
-        y_fit= dose_response(np.log10(x_fit), logIC50, HillSlope)
+        x_fit = np.logspace(min(log_dilution_factors), max(log_dilution_factors), 100)
+        y_fit = dose_response(np.log10(x_fit), logIC50, HillSlope)
         ax.semilogx(x_fit, y_fit, '-', label= f'{sample_name} (Fit)')
         print(f"\033[1;32mCurve fitted for {sample_name}\033[0m")
     else:
@@ -349,39 +349,39 @@ def process_and_plot_results(
         and postv_ctrl_IC50_results[0] holds dict of results df 
         and postv_ctrl_IC50_results[1] holds dict of plt figures
     """
-    results_df= {}
-    figure_dict= {}
+    results_df = {}
+    figure_dict = {}
     
     for key, norm_DF in Norm_data.items():
         print(f"\n\033[1;33mProcessing plate: {key}\033[0m")
         
-        log_dilution_factors= np.log10(norm_DF.index)        
-        results_dict= {}
+        log_dilution_factors = np.log10(norm_DF.index)        
+        results_dict = {}
         
-        fig, ax= plt.subplots(figsize=(9, 6))
+        fig, ax = plt.subplots(figsize=(9, 6))
         
         for i in range(0, len(norm_DF.columns), 2):
-            sample_name= norm_DF.columns[i]
+            sample_name = norm_DF.columns[i]
             print(f"\nStarting\033[1;33m sample {sample_name}\033[0m IC50 calculation...")
             
-            sample_data= norm_DF.iloc[:, i:i+2].mean(axis=1)
+            sample_data = norm_DF.iloc[:, i:i+2].mean(axis=1)
             
             ic50, logIC50, HillSlope, r_squared = calculate_ic50(log_dilution_factors, sample_data)
             
-            results_dict[sample_name]= {'IC50': ic50, 'logIC50': logIC50, 'HillSlope': HillSlope, "r_squared": r_squared}
+            results_dict[sample_name] = {'IC50': ic50, 'logIC50': logIC50, 'HillSlope': HillSlope, "r_squared": r_squared}
             
             plot_dose_response_curve(ax, norm_DF.index, sample_data, sample_name, ic50, logIC50, HillSlope, log_dilution_factors)
 
-        results_df[key]= pd.DataFrame(results_dict).round(4)
+        results_df[key] = pd.DataFrame(results_dict).round(4)
         format_plot(ax, key)
         
         # Save the plot as a base64 encoded string...
         # This only way I found to avoid problems when user goes back and forth in selecting the same images
-        buffer= io.BytesIO()
+        buffer = io.BytesIO()
         fig.savefig(buffer, format='png', dpi= 300)
         buffer.seek(0)
-        image_base64= base64.b64encode(buffer.getvalue()).decode('utf-8')
-        figure_dict[key]= image_base64
+        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        figure_dict[key] = image_base64
         
         plt.close(fig)
     
@@ -416,7 +416,7 @@ def adjust_ic50_values(
         postv_ctrl_IC50_results_w_adj_factor, Adjusted_sample_IC50_results= adjust_ic50_values(postv_ctrl_IC50_results, sample_IC50_results, variants)
     """
     # Dictionary to store average values for each variant
-    ave_values= {variant: [] for variant in variants}
+    ave_values = {variant: [] for variant in variants}
 
     for key, df_data in postv_ctrl_IC50_results.items():
         for variant in ave_values:
@@ -424,28 +424,28 @@ def adjust_ic50_values(
                 ave_values[variant].append(df_data.iloc[0, :].values)
                 break
 
-    postv_ctrl_IC50_results_w_adj_factor= {}
+    postv_ctrl_IC50_results_w_adj_factor = {}
 
     for key, df_data in postv_ctrl_IC50_results.items():
         for variant in ave_values:
             if variant in key:
-                adj_factor= pd.DataFrame((np.mean(ave_values[variant])/df_data.iloc[0, :]).rename("Adj_factor")).T
-                postv_ctrl_IC50_results_w_adj_factor[key]= pd.concat([df_data, adj_factor])
+                adj_factor = pd.DataFrame((np.mean(ave_values[variant])/df_data.iloc[0, :]).rename("Adj_factor")).T
+                postv_ctrl_IC50_results_w_adj_factor[key] = pd.concat([df_data, adj_factor])
                 break
 
-    Adjusted_sample_IC50_results= {}
+    Adjusted_sample_IC50_results = {}
 
     for key, sample in sample_IC50_results.items():
         try:
-            postv_ctrl= postv_ctrl_IC50_results_w_adj_factor[key]
+            postv_ctrl = postv_ctrl_IC50_results_w_adj_factor[key]
             
-            adj_ic50= pd.DataFrame(
+            adj_ic50 = pd.DataFrame(
                 sample.iloc[0, :].values * postv_ctrl.iloc[-1, :].values, 
                 columns=["Adjusted_IC50"]
             ).clip(lower=10).T  # Adjusted IC50 values are set to 10 if lower than 10
             
-            adj_ic50.columns= sample.columns
-            Adjusted_sample_IC50_results[key]= pd.concat([sample, adj_ic50.round(4)])
+            adj_ic50.columns = sample.columns
+            Adjusted_sample_IC50_results[key] = pd.concat([sample, adj_ic50.round(4)])
             
         except KeyError:
             print(f"\033[1;31mError: Missing key {key} in postv_ctrl_IC50_results_w_adj_factor\033[0m")
@@ -637,10 +637,10 @@ app_ui= ui.page_navbar(
 ## -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def server(input, output, Session):
-    rv_processed_data= reactive.Value(None)
-    rv_processing= reactive.Value(False)
-    rv_downloading_results= reactive.Value(False)
-    rv_downloading_plots= reactive.Value(False)
+    rv_processed_data = reactive.Value(None)
+    rv_processing = reactive.Value(False)
+    rv_downloading_results = reactive.Value(False)
+    rv_downloading_plots = reactive.Value(False)
 
     @reactive.Effect
     @reactive.event(input.process)
@@ -649,9 +649,9 @@ def server(input, output, Session):
         try:
             
             # Reading input files
-            sample_names_file= input.sample_names()
-            sample_dilution_file= input.sample_dilution()
-            ctrl_dilution_file= input.ctrl_dilution()
+            sample_names_file = input.sample_names()
+            sample_dilution_file = input.sample_dilution()
+            ctrl_dilution_file = input.ctrl_dilution()
             sample_names_duplicated, sample_dilutionFactors, ctrl_dilutionFactors = render_metadata(
                 sample_names_file[0]["datapath"],
                 sample_dilution_file[0]["datapath"],
@@ -659,10 +659,10 @@ def server(input, output, Session):
             )
 
             # Reading Excel files
-            excel_file_paths= [file['datapath'] for file in input.excel_files()]
-            excel_file_names= [file['name'][:-5] for file in input.excel_files()]
-            excel_path_name_dict= dict(zip(excel_file_names, excel_file_paths))
-            virus_plate_rawData, postv_ctrl_rawData= read_raw_data(
+            excel_file_paths = [file['datapath'] for file in input.excel_files()]
+            excel_file_names = [file['name'][:-5] for file in input.excel_files()]
+            excel_path_name_dict = dict(zip(excel_file_names, excel_file_paths))
+            virus_plate_rawData, postv_ctrl_rawData = read_raw_data(
                 excel_path_name_dict,
                 sample_dilutionFactors,
                 sample_names_duplicated,
@@ -670,14 +670,14 @@ def server(input, output, Session):
             )
 
             # Normalizing data
-            normalized_data, normalized_postv_CTRL_data= normalize_data(
+            normalized_data, normalized_postv_CTRL_data = normalize_data(
                 virus_plate_rawData,
                 postv_ctrl_rawData,
                 input.derive_reference()
             )
 
             # Processing and plotting results
-            postv_ctrl_IC50_results, postv_ctrl_Figures= process_and_plot_results(
+            postv_ctrl_IC50_results, postv_ctrl_Figures = process_and_plot_results(
                 normalized_postv_CTRL_data,
                 sample_type="ctrl"
             )
@@ -770,9 +770,9 @@ def server(input, output, Session):
         if rv_processed_data() is None or input.plot_key() == "":
             return None
         elif input.plot_type() == "Control":
-            image_base64= rv_processed_data()["postv_ctrl_Figures"][input.plot_key()]
+            image_base64 = rv_processed_data()["postv_ctrl_Figures"][input.plot_key()]
         else:
-            image_base64= rv_processed_data()["sample_IC50_Figures"][input.plot_key()]
+            image_base64 = rv_processed_data()["sample_IC50_Figures"][input.plot_key()]
         
         return ui.HTML(f'<img src="data:image/png;base64,{image_base64}">') # Can further manipulate the 'canvas' dimensions and such by including a style input
         
@@ -811,7 +811,7 @@ def server(input, output, Session):
         
         rv_downloading_plots.set(True)
         
-        zip_buffer= io.BytesIO()
+        zip_buffer = io.BytesIO()
         
         with ZipFile(zip_buffer, 'w') as zipf:
             for plot_type in ["postv_ctrl_Figures", "sample_IC50_Figures"]:

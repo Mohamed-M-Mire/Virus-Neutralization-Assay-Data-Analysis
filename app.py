@@ -104,7 +104,7 @@ def read_raw_data(
         )
     """
     virus_plate_rawData = {}
-    postv_ctrl_rawData= {}
+    postv_ctrl_rawData = {}
 
     for filename, filepath in excel_path_name_dict.items():
         try:
@@ -187,7 +187,7 @@ def normalize_data(
         normalized_data, normalized_postv_CTRL_data = normalize_data(raw_data, postv_ctrl_rawData, "row")
     """
     normalized_data = {}
-    normalized_postv_CTRL_data `````= {}
+    normalized_postv_CTRL_data = {}
 
     def normalize(x, reference_low, reference_high):
         return ((x - reference_low) / (reference_high - reference_low)) * 100

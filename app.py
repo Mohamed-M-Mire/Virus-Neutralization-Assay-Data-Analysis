@@ -451,6 +451,9 @@ def adjust_ic50_values(
             print(f"\033[1;31mError: Missing key {key} in postv_ctrl_IC50_results_w_adj_factor\033[0m")
         except Exception as e:
             print(f"\033[1;31mError processing key {key}: {str(e)}\033[0m")
+    
+    postv_ctrl_IC50_results_w_adj_factor.index.names = ["Strain", " Sample"]
+    Adjusted_sample_IC50_results.index.names = ["Strain", " Sample"]
 
     return postv_ctrl_IC50_results_w_adj_factor, Adjusted_sample_IC50_results
 

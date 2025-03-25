@@ -75,5 +75,3 @@ Once processing is complete, you can download:
 - **All generated plots**
 
 A confirmation message will appear once your downloads are complete. 
-
-**Note**: When analyzing large datasets (many plates), the process might take some time.

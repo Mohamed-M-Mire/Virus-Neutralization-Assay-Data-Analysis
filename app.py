@@ -107,6 +107,7 @@ def read_raw_data(
     postv_ctrl_rawData = {}
 
     for filename, filepath in excel_path_name_dict.items():
+        filename = filename.lower()
         try:
             df= pd.read_excel(filepath, sheet_name="Results By Well", skiprows=5)
             luminescence_indices= df.index[df['Unnamed: 1'] == 'Luminescence'].tolist()

@@ -687,7 +687,7 @@ def server(input, output, Session):
             )
 
             # Adjusting IC50 values
-            variants= [v.strip() for v in input.variants().split(',')]
+            variants= [v.strip().lower() for v in input.variants().split(',')]
             postv_ctrl_IC50_results_w_adj_factor, Adjusted_sample_IC50_results = adjust_ic50_values(
                 postv_ctrl_IC50_results,
                 sample_IC50_results,
